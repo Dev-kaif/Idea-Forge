@@ -1,1 +1,1 @@
-{"root":["./config.ts","./src/auth.ts","./src/i.ts","./src/index.ts","./src/Database/schema.ts"],"errors":true,"version":"5.7.2"}
+{"root":["./src/auth.ts","./src/config.ts","./src/index.ts","./src/Database/schema.ts"],"version":"5.7.2"}

@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
 import { UserModel, ContentModel } from './Database/schema';
-import { JWT_SECRET, mongo } from '../config';
+import { JWT_SECRET, mongo } from './config';
 import authMiddleware from './auth';
 
 const app = express();
@@ -37,7 +37,7 @@ interface ContentInfo {
 type fun = Promise<any>
 
 // Signup Route
-app.post('/signup', async (req: Request, res: Response): fun => {
+app.post('/api/v1/signup', async (req: Request, res: Response): fun => {
   const validation = reqBody.safeParse(req.body);
 
   if (!validation.success) {
