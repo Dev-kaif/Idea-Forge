@@ -6,7 +6,7 @@ interface AuthenticatedRequest extends Request {
     userId?: string;
 }
 
-function auth(req: AuthenticatedRequest, res: Response, next: NextFunction){
+function auth(req: AuthenticatedRequest, res: Response, next: NextFunction):any{
     const token = req.headers.token as string | undefined;
 
     if (!token) {
