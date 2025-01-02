@@ -8,7 +8,7 @@ const App = () => {
 
 
   return (
-    <div className='bg-zinc-800 min-h-screen text-white flex overflow-hidden transition-all duration-500'>
+    <div className='bg-zinc-900 min-h-screen font-janeLight text-white flex overflow-hidden transition-all duration-500'>
       <Sidebar/>
       <Background/>
     </div>
