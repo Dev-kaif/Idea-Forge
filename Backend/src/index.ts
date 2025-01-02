@@ -107,7 +107,7 @@ app.post('/api/v1/content', async (req: IGetUserAuthInfoRequest, res: Response):
   }
 
   try {
-    await ContentModel.create({ title, link, tag, userId: req.userId });
+    await ContentModel.create({ title, link, tags:[], userId: req.userId });
 
     return res.status(201).json({ message: "Content created successfully." });
     
