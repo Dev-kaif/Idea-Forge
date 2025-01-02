@@ -13,7 +13,10 @@ export default {
           600:"#5046f8",
           700:"#5046e4"
         }
-      }
+      },
+      fontFamily: {
+        janeLight: ["janeLight", 'sans-serif'],
+      },
     },
   },
   plugins: [],
