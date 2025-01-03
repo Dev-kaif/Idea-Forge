@@ -113,7 +113,7 @@ app.get('/api/v1/brain/:shareLink',async (req: Request, res: Response): fun => {
       }
 
       //username finding
-      let user = link.userId["username"];
+      let user= link.userId["username"];
 
       // Return the username and content
       res.json({user, content });
