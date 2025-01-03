@@ -8,6 +8,7 @@ interface card{
 }
 
 const Card = ({YoutubeSrc,twitterSrc}:card) => {  
+
     useEffect(() => {
       // Load Twitter/X embed script when the component mounts
       const script = document.createElement("script");
@@ -27,6 +28,48 @@ const Card = ({YoutubeSrc,twitterSrc}:card) => {
     };
   
     const transformedUrl = getTwitterUrl(twitterSrc);
+
+    
+    const convertToEmbedUrl = (url: string | undefined) => {
+      if (!url) return "";
+    
+      let videoId = "";
+    
+      // Check for YouTube Live URL (youtube.com/live/)
+      if (url.includes("youtube.com/live/")) {
+        videoId = url.split("/live/")[1].split("?")[0];
+      } 
+      // Check for Shortened URL (youtu.be)
+      else if (url.includes("youtu.be")) {
+        videoId = url.split("/")[3].split("?")[0];
+      } 
+      // Standard YouTube URL (youtube.com/watch?v=VIDEO_ID)
+      else if (url.includes("youtube.com/watch")) {
+        const urlParams = new URL(url).searchParams;
+        videoId = urlParams.get("v") || "";
+      }
+      // Check for YouTube Playlist URL
+      else if (url.includes("youtube.com/playlist")) {
+        const urlParams = new URL(url).searchParams;
+        videoId = urlParams.get("v") || ""; // Extract first video ID
+        if (!videoId) {
+          const listId = urlParams.get("list");
+          if (listId) {
+            // Handle playlist differently, maybe embed the first video from the playlist
+            videoId = listId.split(",")[0];
+          }
+        }
+      }
+    
+      // Return embedded URL if video ID was found
+      if (videoId) {
+        return `https://www.youtube.com/embed/${videoId}`;
+      }
+    
+      return "";
+    };
+    
+     const embedUrl = convertToEmbedUrl(YoutubeSrc);
   
     return (
       //  min-h-[56vh] min-w-64
@@ -46,18 +89,18 @@ const Card = ({YoutubeSrc,twitterSrc}:card) => {
         </div>
         <div className=" object-cover overflow-hidden items-center">
           {/* Twitter Embed */}
-          <blockquote
+          {twitterSrc &&<blockquote
             className="twitter-tweet"
             data-theme="dark"
             style={{ width: "100%", maxWidth: "500px" }} 
           >
             <a href={transformedUrl}></a>
-          </blockquote>
+          </blockquote>}
 
           {/* YouTube Embed */}
           {YoutubeSrc && (
             <iframe
-              src={YoutubeSrc}
+              src={embedUrl}
               className="w-full h-[100%]"
               style={{ maxWidth: "500px", aspectRatio: "16/9" }} // Limits the iframe size to fit content
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -81,5 +124,3 @@ const Card = ({YoutubeSrc,twitterSrc}:card) => {
   
   export default Card;
   
-
-{/* <iframe  className="w-full h-full object-cover" src={YoutubeSrc}></iframe> */}
