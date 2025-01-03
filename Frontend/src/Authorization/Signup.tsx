@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Button from "../Components/Button";
+import Button from "../Dashboard Components/Button";
 
 const SignupPage: React.FC = () => {
   const [formData, setFormData] = useState({

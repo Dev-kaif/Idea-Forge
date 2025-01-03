@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Button from "../Components/Button";
+import Button from "../Dashboard Components/Button";
 
 const LoginPage: React.FC = () => {
   

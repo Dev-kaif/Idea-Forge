@@ -1,9 +1,9 @@
 
 
 import { useState } from 'react';
-import Background from './Components/Background';
-import CreateContent from './Components/CreateContent';
-import Sidebar from './Components/sidebar';
+import Background from './Dashboard Components/Background';
+import CreateContent from './Dashboard Components/CreateContent';
+import Sidebar from './Dashboard Components/sidebar';
 
 
 const DashBoard = () => {
