@@ -5,7 +5,7 @@ import Cards from "./Cards";
 
 const Background = () => {
   return (
-    <div id='Background' className='md:w-[82vw] w-72 min-h-screen py-12 md:px-10 md:py-12'>
+    <div id='Background' className='w-full min-h-screen py-12 md:px-10 md:py-12'>
     <div id='nav'  className=' w-full flex justify-between px-1'>
       <div id='text' className='font-bold text-2xl md:text-4xl '>All Notes</div>
       <div className='flex gap-3'>
@@ -13,7 +13,7 @@ const Background = () => {
       <Button text="Add Content" variant={"bg-purple-700 hover:bg-purple-600 "} icon={<FaPlus />}/>
       </div>
     </div>
-    <div id='cards' className="h-full px-5 flex flex-wrap ">
+    <div id='cards'>
       <Cards/>
     </div>
   </div>
