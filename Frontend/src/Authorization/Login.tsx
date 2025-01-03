@@ -13,7 +13,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-zinc-900 text-white">
-      <div className="w-full max-w-md p-6 bg-zinc-800 rounded-lg shadow-lg">
+      <div className="w-full max-w-md p-6 bg-zinc-700 rounded-lg shadow-lg outline outline-1 outline-white">
         <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -25,7 +25,7 @@ const LoginPage: React.FC = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -38,7 +38,7 @@ const LoginPage: React.FC = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -47,7 +47,7 @@ const LoginPage: React.FC = () => {
         <p className="mt-4 text-center text-sm">
           Don't have an account?{" "}
           <a
-            href="#"
+            href="/signup"
             className="text-blue-400 hover:underline"
           >
             Sign up

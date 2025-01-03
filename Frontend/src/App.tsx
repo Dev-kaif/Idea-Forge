@@ -1,18 +1,14 @@
-
-
-import Background from './Components/Background';
-import Sidebar from './Components/sidebar';
+import { BrowserRouter } from 'react-router-dom'
+import Route from './Routes/Route';
 
 
 const App = () => {
-
-
   return (
-    <div className='bg-zinc-900 min-h-screen font-janeLight text-white flex overflow-hidden transition-all duration-500'>
-      <Sidebar/>
-      <Background/>
-    </div>
+    <BrowserRouter>
+        <Route/>
+    </BrowserRouter>
   )
 }
 
 export default App
+

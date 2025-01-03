@@ -26,7 +26,7 @@ const SignupPage: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-zinc-900 text-white">
-      <div className="w-full max-w-md p-6 bg-zinc-800 rounded-lg shadow-lg">
+      <div className="w-full max-w-md p-6 bg-zinc-700 rounded-lg shadow-lg outline outline-1 outline-white">
         <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -39,7 +39,7 @@ const SignupPage: React.FC = () => {
               name="firstName"
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -53,7 +53,7 @@ const SignupPage: React.FC = () => {
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -67,7 +67,7 @@ const SignupPage: React.FC = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -81,7 +81,7 @@ const SignupPage: React.FC = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -95,18 +95,18 @@ const SignupPage: React.FC = () => {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
           <Button
             text={"Sign Up"}
-            variant="bg-purple-700 hover:bg-purple-600 justify-center transition focus:outline-none focus:ring-2 focus:ring-purple-500"
+            variant="bg-purple-700 hover:bg-purple-600 justify-center transition focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </form>
         <p className="mt-4 text-center text-sm">
           Already have an account?{" "}
-          <a href="#" className="text-blue-400 hover:underline">
+          <a href="/login" className="text-blue-400 hover:underline">
             Log in
           </a>
         </p>
