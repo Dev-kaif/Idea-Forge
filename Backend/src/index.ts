@@ -223,9 +223,17 @@ function generateRandomString(length: number): string {
 app.post('/api/v1/brain/share',async (req: IGetUserAuthInfoRequest, res: Response):fun => {
     try {
         const share: boolean = req.body.share;
-        const hash: string = generateRandomString(10);
-
+        
         if (share) {
+          
+          const exist = await LinkModel.findOne({userId: req.userId})
+
+          if(exist){
+            const hash = exist.hash
+            return res.json({ message: 'Shareable link ', hash });
+          }
+
+          const hash: string = generateRandomString(10);
           // Create a new shareable link
           await LinkModel.create({
             hash,
