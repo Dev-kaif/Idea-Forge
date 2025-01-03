@@ -2,7 +2,9 @@ import Card from "./Card"
 
 const Cards = () => {
   return (
-    <Card/>
+    <div>
+     <Card/>
+    </div>
   )
 }
 

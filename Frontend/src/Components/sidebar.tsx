@@ -23,7 +23,7 @@ function Sidebar() {
 
 
   return (
-    <div id='sidebar' className='bg-zinc-600 w-48 md:w-[18vw] min-h-screen py-8 '>
+    <div id='sidebar' className='bg-zinc-800 w-48 md:w-[18vw] min-h-screen py-8 '>
     <div id='Logo' className='w-full px-2'>
       <div className='flex items-center text-2xl md:text-3xl gap-2 font-bold'>
         <LuBrain className='text-blue-300 text-3xl md:text-4xl ' />
