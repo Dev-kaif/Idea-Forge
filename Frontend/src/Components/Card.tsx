@@ -4,25 +4,23 @@ import { useCallback, useEffect } from "react";
 
 // Define the interface for props: YoutubeSrc and twitterSrc are optional strings.
 interface CardProps {
-  YoutubeSrc?: string;
-  twitterSrc?: string;
+  title:string;
+  Src?:string;
+  type: "Youtube" | "Twitter";
+  discription?:string;
+  Date:string;
+  tags?:string[];
 }
 
-const Card = ({ YoutubeSrc, twitterSrc }: CardProps) => {
+const Card = ({ Src ,type,title,tags,Date,discription }: CardProps) => {
   
   // Custom hook to handle external link opening based on available URLs.
   const useExternalLink = () => {
-    const openExternalLink = useCallback((youtubeUrl?: string, twitterUrl?: string) => {
-      // If YouTube URL is available, open it in a new tab.
-      if (youtubeUrl) {
-        window.open(youtubeUrl, '_blank');
-      } 
-      // If Twitter URL is available, open it in a new tab.
-      else if (twitterUrl) {
-        window.open(twitterUrl, '_blank');
-      }
+    const openExternalLinks = useCallback((...urls: string[]) => {
+      urls.forEach(url => window.open(url, '_blank'));
     }, []);
-    return openExternalLink;
+  
+    return openExternalLinks;
   };
 
   // Get the function to open external links.
@@ -47,7 +45,7 @@ const Card = ({ YoutubeSrc, twitterSrc }: CardProps) => {
   };
 
   // Transform the Twitter URL using the getTwitterUrl function.
-  const transformedUrl = getTwitterUrl(twitterSrc);
+  const transformedUrl = getTwitterUrl(Src);
 
   // Function to convert YouTube URL to the embed format.
   const convertToEmbedUrl = (url: string | undefined) => {
@@ -89,32 +87,33 @@ const Card = ({ YoutubeSrc, twitterSrc }: CardProps) => {
   };
 
   // Convert the YouTube URL (YoutubeSrc prop) to embed URL using the convertToEmbedUrl function.
-  const embedUrl = convertToEmbedUrl(YoutubeSrc);
+  const embedUrl = convertToEmbedUrl(Src);
 
   return (
-    <div className="flex flex-col justify-between bg-zinc-700 w-auto max-h-[56vh] md:mx-2 my-5 rounded-xl overflow-hidden px-4 outline outline-1 outline-gray-100">
+    <div className="flex flex-col justify-between bg-zinc-700 max-w-[20vw] max-h-[56vh] md:mx-2 my-5 rounded-xl overflow-hidden px-4 outline outline-1 outline-gray-100">
       <div>
         <div className="flex justify-between h-10 mb-2 items-center">
           <div className="flex items-center gap-2">
             <IoDocumentTextOutline className="text-xl" />
-            <span className="text-base font-bold">Project Ideas</span>
+            <span className="text-base font-bold">{type}</span>
           </div>
           <div className="text-xl flex gap-3">
             {/* Share Icon - Calls openExternalLink to open the respective link */}
             <IoShareSocialOutline
-              onClick={() => openExternalLink(YoutubeSrc, twitterSrc)}
-              className="hover:opacity-[100] opacity-75 cursor-pointer"
+              onClick={() => openExternalLink(Src)}
+              className="hover:text-gray-50 text-gray-300 cursor-pointer"
             />
             {/* Delete Icon - Placeholder for delete functionality */}
-            <MdDeleteOutline className="hover:opacity-[100] opacity-75 cursor-pointer" />
+            <MdDeleteOutline className="hover:text-gray-50 text-gray-300 cursor-pointer" />
           </div>
         </div>
-        <div className="h-12 font-bold text-2xl">Future Projects</div>
+        <div className="h-12 font-bold text-2xl">{title}</div>
       </div>
 
       <div className="object-cover overflow-hidden items-center">
+        {discription}
         {/* Twitter Embed */}
-        {twitterSrc && (
+        {type == "Twitter" && (
           <blockquote
             className="twitter-tweet"
             data-theme="dark"
@@ -125,7 +124,7 @@ const Card = ({ YoutubeSrc, twitterSrc }: CardProps) => {
         )}
 
         {/* YouTube Embed */}
-        {YoutubeSrc && (
+        {type=="Youtube" && (
           <iframe
             src={embedUrl} // YouTube Embed URL
             className="w-full h-[100%]" // Full width and auto height to fit
@@ -138,10 +137,9 @@ const Card = ({ YoutubeSrc, twitterSrc }: CardProps) => {
 
       <div>
         <div className="text-sm w-full h-10 items-center flex gap-1">
-          <div className="bg-purple-300 text-purple-500 w-fit px-3 py-1 rounded-xl">#productivity</div>
-          <div className="bg-purple-300 text-purple-500 w-fit px-3 py-1 rounded-xl">#ideas</div>
+          {tags && tags.map((tag)=><div className="bg-purple-300 text-purple-500 w-fit px-3 py-1 rounded-xl">#{tag}</div>)}
         </div>
-        <div className="h-8 items-center my-1 text-sm opacity-75">Added on 10/03/2024</div>
+        <div className="h-8 items-center my-1 text-sm text-gray-300">Added on {Date}</div>
       </div>
     </div>
   );
