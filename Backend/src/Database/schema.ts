@@ -1,23 +1,30 @@
-import mongoose, { Schema} from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
+// User Schema
+const userSchema = new Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  username: { type: String, required: true, unique: true },
+  firstName: { type: String },
+  lastName: { type: String },
+});
 
+export const UserModel = mongoose.model('User', userSchema);
 
-const user = new Schema({
-    email : {type:String,required:true,unique:true},
-    password : {type:String,required:true},
-    username : {type:String,required:true,unique:true},
-    firstName : String,
-    lastName : String
-})
+// Content Schema
+const contentSchema = new Schema({
+  title: { type: String },
+  link: { type: String },
+  userId: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
+  tags:[ { type:String, ref: 'Tag' }],
+});
 
-export const UserModel = mongoose.model('User',user);
+export const ContentModel = mongoose.model('Content', contentSchema);
 
-const Content = new Schema({
-    title:String,
-    link:String,
-    tags:[{type:mongoose.Types.ObjectId, ref:"Tag"}],
-    userId:[{type:mongoose.Types.ObjectId, ref:user}]
-})
+// Link Schema
+const linkSchema = new Schema({
+  hash: { type: String },
+  userId: { type: mongoose.Types.ObjectId, ref: 'User', required: true, unique: true }, 
+});
 
-export const ContentModel = mongoose.model('Content',Content);
-
+export const LinkModel = mongoose.model('Link', linkSchema);
