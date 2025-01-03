@@ -3,7 +3,7 @@ import { IoDocumentTextOutline, IoShareSocialOutline} from "react-icons/io5";
 
 const Card = () => {
   return (
-    <div className="flex flex-col justify-between bg-zinc-700  h-80 w-64 md:mx-2 my-5 rounded-xl overflow-hidden px-4">
+    <div className="flex flex-col justify-between bg-zinc-700  h-80 w-64 md:mx-2 my-5 rounded-xl overflow-hidden px-4 outline outline-1 outline-gray-100">
       <div>
         <div className="flex justify-between h-10 mb-2 items-center">
           <div className='flex items-center gap-2'>
