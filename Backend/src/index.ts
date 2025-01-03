@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
-import { UserModel, ContentModel } from './Database/schema';
+import { UserModel, ContentModel, LinkModel } from './Database/schema';
 import { JWT_SECRET, mongo } from './config';
 import authMiddleware from './auth';
 
@@ -31,7 +31,7 @@ interface IGetUserAuthInfoRequest extends Request {
 interface ContentInfo {
   title: string;
   link: string;
-  tag: string;
+  tags: string[];
 }
 
 type fun = Promise<any>
@@ -91,14 +91,51 @@ app.post('/api/v1/signin', async (req: Request, res: Response): fun => {
   }
 });
 
+
+
+// acess to the shared link
+app.get('/api/v1/brain/:shareLink',async (req: Request, res: Response): fun => {
+    try {
+      const hash = req.params.shareLink;
+
+      // Find the link by hash and populate the associated user
+      const link = await LinkModel.findOne({ hash }).populate('userId','username');
+      
+      if (!link) {
+        return res.status(401).json({ message: 'Invalid or expired link' });
+      }
+
+      // Find the content associated with the user
+      const content = await ContentModel.findOne({ userId: link.userId });
+
+      if (!content) {
+        return res.status(404).json({ message: 'No content found for the provided link' });
+      }
+
+      //username finding
+      let user = link.userId["username"];
+
+      // Return the username and content
+      res.json({user, content });
+
+    } catch (error) {
+      console.error('Error fetching shared content:', error);
+      res.status(500).json({ message: 'An error occurred while processing the request' });
+    }
+  }
+);
+
+
+
+
 // Authentication Middleware
 app.use(authMiddleware);
 
 // Create Content
 app.post('/api/v1/content', async (req: IGetUserAuthInfoRequest, res: Response): fun => {
-  const { title, link, tag }: ContentInfo = req.body;
+  const { title, link, tags }: ContentInfo = req.body;
 
-  if (!title || !link || !tag) {
+  if (!title || !link || !tags) {
     return res.status(400).json({ message: "Missing required fields: title, link, or tag." });
   }
 
@@ -107,7 +144,8 @@ app.post('/api/v1/content', async (req: IGetUserAuthInfoRequest, res: Response):
   }
 
   try {
-    await ContentModel.create({ title, link, tags:[], userId: req.userId });
+
+    await ContentModel.create({ title, link, tags , userId: req.userId });
 
     return res.status(201).json({ message: "Content created successfully." });
     
@@ -174,13 +212,42 @@ app.get('/api/v1/contents/content',async (req: IGetUserAuthInfoRequest, res: Res
         res.status(500).json({ message: "An internal server error occurred." });
     }
 })
-// app.post('/api/v1/brain/share',(req,res)=>{
-    
-// })
 
-// app.get('/api/v1/brain/:shareLink',(req,res)=>{
+function generateRandomString(length: number): string {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  return Array.from({ length }, () =>
+      characters.charAt(Math.floor(Math.random() * characters.length))
+  ).join('');
+}
 
-// })
+app.post('/api/v1/brain/share',async (req: IGetUserAuthInfoRequest, res: Response):fun => {
+    try {
+        const share: boolean = req.body.share;
+        const hash: string = generateRandomString(10);
+
+        if (share) {
+          // Create a new shareable link
+          await LinkModel.create({
+            hash,
+            userId: req.userId,
+          });
+          return res.json({ message: 'Shareable link created', hash });
+
+        } else {
+
+          await LinkModel.deleteMany({
+            userId: req.userId,
+          });
+          return res.json({ message: 'Shareable links removed' });
+
+        }
+    } catch (error) {
+      console.error('Error updating shareable link:', error);
+      res.status(500).json({ message: 'An error occurred' });
+    }
+  }
+);
+
 
 
 async function main():Promise<void> {
