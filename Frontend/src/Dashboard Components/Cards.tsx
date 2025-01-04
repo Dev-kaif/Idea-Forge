@@ -1,12 +1,44 @@
-import Card from "./Card"
+import Card from "./Card";
+import { BACKEND_URL } from "../../config";
+import axios from "../utils/token"
+import { IoDocumentTextOutline, IoLink } from "react-icons/io5";
+import { AiOutlineYoutube } from "react-icons/ai";
+import { FaXTwitter } from "react-icons/fa6";
+import { MdComputer } from "react-icons/md";
 
-const Cards = () => {
+interface CardItem {
+  title: string;
+  linkType: string;
+  link: string;
+  description: string;
+  tags: string[];
+}
+
+interface Dataarray {
+  data: CardItem[];
+  deleteCard:any;
+  shared?:boolean
+}
+
+const Cards = ({data,deleteCard,shared}:Dataarray) => {
+
+    const icons = [
+      { name: "Tweets", logo: <FaXTwitter /> },
+      { name: "Youtube", logo: <AiOutlineYoutube /> },
+      { name: "Documents", logo: <IoDocumentTextOutline /> },
+      { name: "Links", logo: <IoLink /> },
+      { name: "Other", logo: <MdComputer /> },
+    ];
+
+    
   return (
     <div className="mx-auto px-4 py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <Card tags={["menss issue","watch later"] }Date={new Date().toLocaleDateString()} title="Mens Right" type="Youtube" Src="https://www.youtube.com/watch?v=iZwJNf2OVvA&ab_channel=DhruvRathee" />
-      <Card discription="hello bhaiyyo behno mera name kalli me hu balli" title="Harkirat"   Date={new Date().toLocaleDateString()} type={"Twitter"} Src={"https://x.com/kirat_tw/status/1875218603966136424" }/>
-    </div>
+        {data.map((item)=>{
+        const icon =  icons.filter((i)=>i.name==item.linkType)
+        return <Card shared={shared} del={deleteCard} title={item.title} key={item._id} id={item._id}  discription={item.description} icon={icon[0].logo} type={item.linkType} Src={item.link } tags={item.tags}   Date={new Date().toLocaleDateString()}/>
+        })}
+      </div>
     </div>
   )
 }
