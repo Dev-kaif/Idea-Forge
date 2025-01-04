@@ -4,6 +4,7 @@ import SignupPage from "../Authorization/Signup";
 import Landing from "../Landing Page/Landing";
 import LoginPage from "../Authorization/Login";
 import DashBoard from "../DashBoard";
+import Shared from "../Dashboard Components/Shared";
 
 const route = () => {
   return (
@@ -12,8 +13,8 @@ const route = () => {
         <Route path="/signup" element={<SignupPage/>}/>
         <Route path="/login" element={<LoginPage/>}/>
         <Route path="/dashboard" element={<DashBoard/>}/>
+        <Route path="/share/:hash" element={<Shared />}/>
     </Routes>
   )
 }
-
 export default route
