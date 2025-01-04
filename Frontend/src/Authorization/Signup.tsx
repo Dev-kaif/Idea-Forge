@@ -1,27 +1,50 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Button from "../Dashboard Components/Button";
+import axios from "axios";
+import { BACKEND_URL } from '../../config';
+import { useNavigate } from "react-router";
 
 const SignupPage: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name:"",
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const navigate = useNavigate();
+  const [loading, setloading] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const nameRef = useRef<HTMLInputElement>(null);
+  const usernameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      console.error("Passwords do not match");
+
+    const name = nameRef.current?.value;
+    const username = usernameRef.current?.value;
+    const email = emailRef.current?.value;
+    const password = passwordRef.current?.value;
+    const confirmPassword = confirmPasswordRef.current?.value;
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
       return;
     }
-    console.log("Signup Submitted", formData);
+
+    setloading(true); // Set loading to true before making the request
+    try {
+      const res = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
+        name,
+        username,
+        email,
+        password,
+      });
+
+      alert(res.data.message); // Show success message
+      navigate("/login")
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || "Signup failed. Please try again.";
+      alert(errorMessage); // Show error message
+    } finally {
+      setloading(false); // Set loading to false after request completion
+    }
   };
 
   return (
@@ -30,15 +53,13 @@ const SignupPage: React.FC = () => {
         <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="firstName" className="block text-sm font-medium">
+            <label htmlFor="name" className="block text-sm font-medium">
               Name
             </label>
             <input
               type="text"
-              id="firstName"
-              name="firstName"
-              value={formData.name}
-              onChange={handleChange}
+              id="name"
+              ref={nameRef}
               className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -50,9 +71,7 @@ const SignupPage: React.FC = () => {
             <input
               type="text"
               id="username"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
+              ref={usernameRef}
               className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -64,9 +83,7 @@ const SignupPage: React.FC = () => {
             <input
               type="email"
               id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
+              ref={emailRef}
               className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -78,9 +95,7 @@ const SignupPage: React.FC = () => {
             <input
               type="password"
               id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
+              ref={passwordRef}
               className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -92,16 +107,18 @@ const SignupPage: React.FC = () => {
             <input
               type="password"
               id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
+              ref={confirmPasswordRef}
               className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
-          <Button
-            text={"Sign Up"}
-            variant="bg-purple-700 hover:bg-purple-600 justify-center transition focus:outline-none focus:ring-2 focus:ring-blue-500"
+          <Button 
+            text="Sign Up"
+            type="submit"
+            disabled={loading} 
+            variant={`${
+              loading ? "bg-[#181362] cursor-not-allowed opacity-60" : "bg-purple-700 hover:bg-purple-600"
+            } py-2 justify-center transition`}
           />
         </form>
         <p className="mt-4 text-center text-sm">

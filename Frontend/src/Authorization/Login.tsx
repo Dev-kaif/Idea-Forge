@@ -1,14 +1,34 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Button from "../Dashboard Components/Button";
+import axios from "axios";
+import { BACKEND_URL } from "../../config";
+import { useNavigate } from "react-router";
 
 const LoginPage: React.FC = () => {
-  
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [loading, setloading] = useState(false)
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate()
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Login Submitted", { email, password });
+    const email = emailRef.current?.value;
+    const password = passwordRef.current?.value;
+
+    setloading(true); // Set loading to true before making the request
+    try {
+      const res = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
+        email,
+        password,
+      });
+
+      alert(res.data.message); // Show success message
+      navigate("/dashboard")
+    } catch (err:any) {
+      const errorMessage = err.response?.data?.message || "Signin failed. Please try again.";
+      alert(errorMessage); // Show error message
+    } finally {
+      setloading(false); // Set loading to false after request completion
+    }
   };
 
   return (
@@ -23,8 +43,7 @@ const LoginPage: React.FC = () => {
             <input
               type="email"
               id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              ref={emailRef}
               className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -36,13 +55,19 @@ const LoginPage: React.FC = () => {
             <input
               type="password"
               id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              ref={passwordRef}
               className="w-full px-4 py-2 mt-1 bg-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
-          <Button text={"Login"} variant="bg-purple-700 hover:bg-purple-600 justify-center transition focus:outline-none focus:ring-2 focus:ring-purple-500"/>
+          <Button 
+            text="Sign Up"
+            type="submit"
+            disabled={loading} 
+            variant={`${
+              loading ? "bg-[#181362] cursor-not-allowed opacity-60" : "bg-purple-700 hover:bg-purple-600"
+            } py-2 justify-center transition`}
+          />
         </form>
         <p className="mt-4 text-center text-sm">
           Don't have an account?{" "}
