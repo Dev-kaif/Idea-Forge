@@ -1,19 +1,23 @@
 import { MdDeleteOutline } from "react-icons/md";
-import { IoDocumentTextOutline, IoShareSocialOutline } from "react-icons/io5";
-import { useCallback, useEffect } from "react";
+import {  IoShareSocialOutline } from "react-icons/io5";
+import { ReactNode, useCallback, useEffect } from "react";
 
 // Define the interface for props: YoutubeSrc and twitterSrc are optional strings.
 interface CardProps {
+  id:string
   title:string;
   Src?:string;
-  type: "Youtube" | "Twitter";
+  type: string;
   discription?:string;
   Date:string;
   tags?:string[];
+  icon?:ReactNode;
+  del?:any;
+  shared?:boolean
 }
 
-const Card = ({ Src ,type,title,tags,Date,discription }: CardProps) => {
-  
+const Card = ({ Src,type,title,tags,Date,discription,icon,id,del,shared }: CardProps) => {
+
   // Custom hook to handle external link opening based on available URLs.
   const useExternalLink = () => {
     const openExternalLinks = useCallback((...urls: string[]) => {
@@ -94,7 +98,7 @@ const Card = ({ Src ,type,title,tags,Date,discription }: CardProps) => {
       <div>
         <div className="flex justify-between h-10 mb-2 items-center">
           <div className="flex items-center gap-2">
-            <IoDocumentTextOutline className="text-xl" />
+            <span className="text-xl">{icon}</span>
             <span className="text-base font-bold">{type}</span>
           </div>
           <div className="text-xl flex gap-3">
@@ -104,13 +108,13 @@ const Card = ({ Src ,type,title,tags,Date,discription }: CardProps) => {
               className="hover:text-gray-50 text-gray-300 cursor-pointer"
             />
             {/* Delete Icon - Placeholder for delete functionality */}
-            <MdDeleteOutline className="hover:text-gray-50 text-gray-300 cursor-pointer" />
+           {!shared && <MdDeleteOutline onClick={()=>del(id)} className="hover:text-gray-50 text-gray-300 cursor-pointer" />}
           </div>
         </div>
         <div className="h-12 font-bold text-2xl">{title}</div>
       </div>
 
-      <div className="object-cover overflow-hidden items-center">
+      <div className="object-cover overflow-hidden">
         {discription}
         {/* Twitter Embed */}
         {type == "Twitter" && (
@@ -136,7 +140,7 @@ const Card = ({ Src ,type,title,tags,Date,discription }: CardProps) => {
       </div>
 
       <div>
-        <div className="text-sm w-full h-10 items-center flex gap-1">
+        <div className="text-sm w-full h-10 items-center flex gap-1 my-2">
           {tags && tags.map((tag)=><div className="bg-purple-300 text-purple-500 w-fit px-3 py-1 rounded-xl">#{tag}</div>)}
         </div>
         <div className="h-8 items-center my-1 text-sm text-gray-300">Added on {Date}</div>
