@@ -84,7 +84,7 @@ app.post('/api/v1/signin', async (req: Request, res: Response): fun => {
       return res.status(403).json({ message: "Incorrect credentials" });
     }
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET);
+    const token = jwt.sign({ id: user._id }, JWT_SECRET,{expiresIn:"10h"});
 
     return res.status(200).json({ token, message: "Signin successful" });
 
