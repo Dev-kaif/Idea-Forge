@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
-import { UserModel, ContentModel, LinkModel } from './Database/schema';
+import { UserModel, ContentModel, LinkModel, TagsModel } from './Database/schema';
 import { JWT_SECRET, mongo } from './config';
 import authMiddleware from './auth';
 import cors from 'cors'
@@ -32,6 +32,8 @@ interface IGetUserAuthInfoRequest extends Request {
 interface ContentInfo {
   title: string;
   link: string;
+  description: string;
+  linkType: string;
   tags: string[];
 }
 
@@ -82,7 +84,7 @@ app.post('/api/v1/signin', async (req: Request, res: Response): fun => {
       return res.status(403).json({ message: "Incorrect credentials" });
     }
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id }, JWT_SECRET);
 
     return res.status(200).json({ token, message: "Signin successful" });
 
@@ -106,7 +108,7 @@ app.get('/api/v1/brain/:shareLink',async (req: Request, res: Response): fun => {
       }
 
       // Find the content associated with the user
-      const content = await ContentModel.findOne({ userId: link.userId });
+      const content = await ContentModel.find({ userId: link.userId });
 
       if (!content) {
         return res.status(404).json({ message: 'No content found for the provided link' });
@@ -126,28 +128,53 @@ app.get('/api/v1/brain/:shareLink',async (req: Request, res: Response): fun => {
 );
 
 
-
-
 // Authentication Middleware
 app.use(authMiddleware);
 
 // Create Content
-app.post('/api/v1/content', async (req: IGetUserAuthInfoRequest, res: Response): fun => {
-  const { title, link, tags }: ContentInfo = req.body;
+app.post('/api/v1/content', async (req: IGetUserAuthInfoRequest, res: Response):fun => {
+  const { title, description, link, linkType, tags }: ContentInfo = req.body;
 
-  if (!title || !link || !tags) {
-    return res.status(400).json({ message: "Missing required fields: title, link, or tag." });
+  // Validate required fields
+  if (!title || !link || !tags || !linkType) {
+    return res.status(400).json({ message: "Missing required fields: title, link, linkType, or tags." });
   }
 
   if (!req.userId) {
     return res.status(401).json({ message: "User not authenticated." });
   }
 
-  try {
+  // Validate tags is an array
+  if (!Array.isArray(tags) || tags.some(tag => typeof tag !== 'string')) {
+    return res.status(400).json({ message: "Tags must be an array of strings." });
+  }
 
-    await ContentModel.create({ title, link, tags , userId: req.userId });
+  try {
+    // Create content with all required fields
+    await ContentModel.create({
+      title,
+      description,
+      link,
+      linkType,
+      tags,
+      userId: req.userId,
+    });
 
     return res.status(201).json({ message: "Content created successfully." });
+  } catch (error: any) {
+    return res.status(500).json({ message: "An internal error occurred", error: error.message });
+  }
+});
+
+app.put('/api/v1/tags',async (req: IGetUserAuthInfoRequest, res: Response): fun => {
+  const { tags }:Pick<ContentInfo,'tags'>  = req.body;
+  if (!tags) {
+    return res.status(400).json({ message: "Missing required fields: tags." });
+  }
+  try {
+    
+    await TagsModel.updateOne({ tags });
+    return res.status(201).json({ message: "Tag created successfully." });
     
   } catch (error: any) {
     return res.status(500).json({ message: "An internal error occurred", error: error.message });
@@ -163,6 +190,15 @@ app.get('/api/v1/contents', async (req: IGetUserAuthInfoRequest, res: Response):
   try {
     const contents = await ContentModel.find({ userId: req.userId }).populate('userId', 'username');
     return res.status(200).json({ contents });
+  } catch (error: any) {
+    return res.status(500).json({ message: "An internal error occurred", error: error.message });
+  }
+});
+
+app.get('/api/v1/tags', async (req: IGetUserAuthInfoRequest, res: Response): fun => {
+  try {
+    const tags = await TagsModel.find({});
+    return res.status(200).json({tags});
   } catch (error: any) {
     return res.status(500).json({ message: "An internal error occurred", error: error.message });
   }
