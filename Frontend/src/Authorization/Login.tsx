@@ -13,23 +13,28 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     const email = emailRef.current?.value;
     const password = passwordRef.current?.value;
-
+  
     setloading(true); // Set loading to true before making the request
     try {
       const res = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
         email,
         password,
       });
-
+  
       alert(res.data.message); // Show success message
-      navigate("/dashboard")
-    } catch (err:any) {
+  
+      const jwt = res.data.token;
+      localStorage.setItem("token", jwt);
+  
+      navigate("/dashboard");
+    } catch (err: any) {
       const errorMessage = err.response?.data?.message || "Signin failed. Please try again.";
       alert(errorMessage); // Show error message
     } finally {
       setloading(false); // Set loading to false after request completion
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-zinc-900 text-white">
