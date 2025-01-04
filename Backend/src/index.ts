@@ -7,9 +7,11 @@ import mongoose from 'mongoose';
 import { UserModel, ContentModel, LinkModel } from './Database/schema';
 import { JWT_SECRET, mongo } from './config';
 import authMiddleware from './auth';
-
+import cors from 'cors'
 const app = express();
 const saltRounds = 5;
+
+app.use(cors())
 
 app.use(express.json());
 
@@ -17,8 +19,7 @@ app.use(express.json());
 const reqBody = z.object({
   email: z.string().email(),
   username: z.string().min(1).max(100),
-  firstName: z.string().min(1).max(100),
-  lastName: z.string().min(1).max(100),
+  name: z.string().min(1).max(100),
   password: z.string().min(8, { message: "Password must be at least 8 characters long" }).max(30),
 });
 
@@ -47,14 +48,13 @@ app.post('/api/v1/signup', async (req: Request, res: Response): fun => {
     });
   }
 
-  const { email, username, firstName, lastName, password }: SignupRequest = validation.data;
+  const { email, username, name ,password }: SignupRequest = validation.data;
 
   try {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     await UserModel.create({
-      firstName,
-      lastName,
+      name,
       username,
       email,
       password: hashedPassword,
