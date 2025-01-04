@@ -1,45 +1,98 @@
-import { useState } from "react";
+import axios from "../utils/token";
+import { useState, useEffect } from "react";
+import { BACKEND_URL } from "../../config";
 
-interface addcon {
+interface AddContentProps {
   open: boolean;
-  onClose: ()=>void;
-}
-
-interface Tag {
-  id: number;
-  name: string;
+  onClose: () => void;
 }
 
 const linkTypes = [
-  { value: "website", label: "Website" },
-  { value: "document", label: "Document" },
-  { value: "video", label: "Video" },
-  { value: "image", label: "Image" },
-  { value: "other", label: "Other" },
+  { value: "Twitter", label: "Twitter" },
+  { value: "Youtube", label: "Youtube" },
+  { value: "Website", label: "Website" },
+  { value: "Document", label: "Document" },
+  { value: "Link", label: "Links" },
+  { value: "Other", label: "Other" },
 ];
 
-function CreateContent({ open, onClose }: addcon) {
+function CreateContent({ open, onClose }: AddContentProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [linkType, setLinkType] = useState("");
   const [link, setLink] = useState("");
-
-  const [tags, setTags] = useState<Tag[]>([
-    { id: 1, name: "Work" },
-    { id: 2, name: "Personal" },
-    { id: 3, name: "Urgent" },
-  ]);
-  const [selectedTag, setSelectedTag] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
   const [showNewTagInput, setShowNewTagInput] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleAddNewTag = () => {
-    if (newTag && !tags.some((tag) => tag.name === newTag)) {
-      const newTagObject = { id: tags.length + 1, name: newTag };
-      setTags([...tags, newTagObject]);
-      setSelectedTag(newTag);
-      setNewTag("");
-      setShowNewTagInput(false);
+  useEffect(() => {
+    async function fetchTags() {
+      try {
+        const res = await axios.get(`${BACKEND_URL}/api/v1/tags`);
+        setTags(res.data.tags[0].tags);
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+      }
+    }
+    fetchTags();
+  }, []);
+
+  const handleTagSelection = (tag: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag)
+        ? prev.filter((t) => t !== tag) // Remove tag if already selected
+        : [...prev, tag] // Add tag if not selected
+    );
+  };
+
+  const handleAddNewTag = async () => {
+    if (newTag && !tags.includes(newTag)) {
+      const newTags = [...tags, newTag];
+      try {
+        const res = await axios.put(`${BACKEND_URL}/api/v1/tags`, { tags: newTags });
+        setTags(newTags);
+        setNewTag("");
+        setShowNewTagInput(false);
+        alert(res.data.message);
+      } catch (error) {
+        console.error("Error adding new tag:", error);
+        alert("Failed to add new tag. Please try again.");
+      }
+    } else {
+      alert("Tag already exists or input is empty.");
+    }
+  };
+
+  const addContent = async () => {
+    if (!title || !linkType) {
+      alert("Please fill in all fields and select at least one tag.")
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const res = await axios.post(`${BACKEND_URL}/api/v1/content`, {
+        title,
+        description,
+        linkType,
+        link,
+        tags: selectedTags,
+      });
+      alert(res.data.message);
+      onClose();
+      setTitle("");
+      setDescription("");
+      setLinkType("");
+      setLink("");
+      setSelectedTags([]);
+  
+    } catch (error) {
+      console.error("Error adding content:", error);
+      alert("Failed to add content. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -47,10 +100,10 @@ function CreateContent({ open, onClose }: addcon) {
     <>
       {open && (
         <div className="w-screen h-screen bg-zinc-900 fixed top-0 left-0 bg-opacity-60">
-          <div className=" flex items-center justify-center w-full h-full">
+          <div className="flex items-center justify-center w-full h-full">
             <div className="bg-white dark:bg-zinc-800 shadow-lg dark:shadow-2xl rounded-xl p-8 w-full max-w-md relative transition-colors duration-200">
               <button
-                onClick={()=>onClose()}
+                onClick={onClose}
                 className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors duration-200"
               >
                 <svg
@@ -73,15 +126,11 @@ function CreateContent({ open, onClose }: addcon) {
               </h2>
               <div className="space-y-6">
                 <div>
-                  <label
-                    htmlFor="title"
-                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1"
-                  >
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
                     Title
                   </label>
                   <input
                     type="text"
-                    id="title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="w-full px-4 py-2 rounded-md bg-zinc-100 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-colors duration-200"
@@ -89,14 +138,10 @@ function CreateContent({ open, onClose }: addcon) {
                   />
                 </div>
                 <div>
-                  <label
-                    htmlFor="description"
-                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1"
-                  >
-                    Description
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                    Description <span className="text-zinc-400">(optional)</span>
                   </label>
                   <textarea
-                    id="description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     rows={2}
@@ -105,19 +150,15 @@ function CreateContent({ open, onClose }: addcon) {
                   ></textarea>
                 </div>
                 <div>
-                  <label
-                    htmlFor="linkType"
-                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1"
-                  >
-                    Link Type
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                  Type
                   </label>
                   <select
-                    id="linkType"
                     value={linkType}
                     onChange={(e) => setLinkType(e.target.value)}
                     className="w-full px-4 py-2 rounded-md bg-zinc-100 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-colors duration-200"
                   >
-                    <option value="">Select link type</option>
+                    <option value="">Select type</option>
                     {linkTypes.map((type) => (
                       <option key={type.value} value={type.value}>
                         {type.label}
@@ -126,15 +167,11 @@ function CreateContent({ open, onClose }: addcon) {
                   </select>
                 </div>
                 <div>
-                  <label
-                    htmlFor="link"
-                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1"
-                  >
-                    Link
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                    Link <span className="text-zinc-400">(optional)</span>
                   </label>
                   <input
                     type="text"
-                    id="link"
                     value={link}
                     onChange={(e) => setLink(e.target.value)}
                     className="w-full px-4 py-2 rounded-md bg-zinc-100 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-colors duration-200"
@@ -142,33 +179,32 @@ function CreateContent({ open, onClose }: addcon) {
                   />
                 </div>
                 <div>
-                  <label
-                    htmlFor="tag"
-                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1"
-                  >
-                    Tag
+                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                    Tags <span className="text-zinc-400">(optional)</span>
                   </label>
-                  <select
-                    id="tag"
-                    value={selectedTag}
-                    onChange={(e) => {
-                      if (e.target.value === "new") {
-                        setShowNewTagInput(true);
-                      } else {
-                        setSelectedTag(e.target.value);
-                        setShowNewTagInput(false);
-                      }
-                    }}
-                    className="w-full px-4 py-2 rounded-md bg-zinc-100 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-colors duration-200"
-                  >
-                    <option value="">Select a tag</option>
-                    {tags.map((tag) => (
-                      <option key={tag.id} value={tag.name}>
-                        {tag.name}
-                      </option>
+                  <div className="flex flex-wrap gap-2">
+                    {tags.map((tag, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => handleTagSelection(tag)}
+                        className={`px-3 py-1 rounded-full border ${
+                          selectedTags.includes(tag)
+                            ? "bg-blue-600 text-white border-blue-600"
+                            : "bg-zinc-100 text-zinc-700 border-zinc-300 dark:bg-zinc-700 dark:text-zinc-300 dark:border-zinc-600"
+                        } hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors`}
+                      >
+                        {tag}
+                      </button>
                     ))}
-                    <option value="new">Add new tag</option>
-                  </select>
+                  </div>
+
+                  <button
+                    onClick={() => setShowNewTagInput(true)}
+                    className="text-blue-600 dark:text-blue-400 mt-2"
+                  >
+                    Add new tag
+                  </button>
                 </div>
                 {showNewTagInput && (
                   <div className="flex space-x-2">
@@ -181,14 +217,18 @@ function CreateContent({ open, onClose }: addcon) {
                     />
                     <button
                       onClick={handleAddNewTag}
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200"
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-md"
                     >
                       Add
                     </button>
                   </div>
                 )}
-                <button className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200">
-                  Submit
+                <button
+                  onClick={addContent}
+                  disabled={isLoading}
+                  className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-md"
+                >
+                  {isLoading ? "Submitting..." : "Submit"}
                 </button>
               </div>
             </div>
