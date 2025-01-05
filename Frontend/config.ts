@@ -1,1 +1,1 @@
-export const BACKEND_URL = "https://idea-forge-azure.vercel.app/"
+export const BACKEND_URL = "https://idea-forge-azure.vercel.app"
