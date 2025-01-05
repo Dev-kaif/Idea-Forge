@@ -114,8 +114,10 @@ const Card = ({ Src,type,title,tags,Date,discription,icon,id,del,shared }: CardP
         <div className="h-12 font-bold text-2xl">{title}</div>
       </div>
 
-      <div className="object-cover overflow-hidden">
-        {discription}
+      <div className="object-cover overflow-hidden flex flex-col gap-2">
+        <span>{discription}</span>
+        {(type === "Website" || type === "Links" || type === "Document" || type === "Others") && <span>{Src}</span>}
+
         {/* Twitter Embed */}
         {type == "Twitter" && (
           <blockquote
