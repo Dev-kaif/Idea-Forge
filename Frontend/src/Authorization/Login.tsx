@@ -67,7 +67,7 @@ const LoginPage: React.FC = () => {
             />
           </div>
           <Button 
-            text="Sign Up"
+            text= {loading? "Loging in....":"Login"}
             type="submit"
             disabled={loading} 
             variant={`${

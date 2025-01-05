@@ -114,7 +114,7 @@ const SignupPage: React.FC = () => {
             />
           </div>
           <Button 
-            text="Sign Up"
+            text={loading?"Signing Up...":"Sign Up"}
             type="submit"
             disabled={loading} 
             variant={`${
