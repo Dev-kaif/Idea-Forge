@@ -11,7 +11,13 @@ import cors from 'cors'
 const app = express();
 const saltRounds = 5;
 
-app.use(cors())
+app.use(
+  cors({
+    origin: "https://idea-forge-main.vercel.app", // Frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
+    credentials: true, // Allow cookies if needed
+  })
+);
 
 app.use(express.json());
 
