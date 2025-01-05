@@ -13,6 +13,7 @@ const route = () => {
         <Route path="/signup" element={<SignupPage/>}/>
         <Route path="/login" element={<LoginPage/>}/>
         <Route path="/dashboard" element={<DashBoard/>}/>
+        <Route path="/dashboard/:filter" element={<DashBoard/>}/>
         <Route path="/share/:hash" element={<Shared />}/>
     </Routes>
   )

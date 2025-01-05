@@ -183,10 +183,11 @@ app.put('/api/v1/tags',async (req: IGetUserAuthInfoRequest, res: Response): fun 
 
 // Fetch User's Contents
 app.get('/api/v1/contents', async (req: IGetUserAuthInfoRequest, res: Response): fun => {
+  const filter = req.query.filter
   if (!req.userId) {
     return res.status(401).json({ message: "User not authenticated." });
   }
-
+  
   try {
     const contents = await ContentModel.find({ userId: req.userId }).populate('userId', 'username');
     return res.status(200).json({ contents });
@@ -229,25 +230,39 @@ app.delete('/api/v1/content', async (req: IGetUserAuthInfoRequest, res: Response
 });
 
 //get single content
-app.get('/api/v1/contents/content',async (req: IGetUserAuthInfoRequest, res: Response):fun => {
-    const { contentId } = req.body;
-    const userId = req.userId;
+app.get('/api/v1/contents/:content', async (req: IGetUserAuthInfoRequest, res: Response): fun => {
+  const filter = req.params.content;
+  const userId = req.userId;
 
-    if (!contentId) {
-        return res.status(400).json({ message: "Content ID is required." });
-    }
+  // Use a mapping object for search values
+  const filterMap: Record<string, string> = {
+      'Videos': 'Youtube',
+      'Tweets': 'Twitter',
+      'Documents': 'Document',
+      'Website': 'Links',
+      'Links': 'Links',
+  };
 
-    if (!userId) {
-        return res.status(401).json({ message: "User not authenticated." });
-    }
-    try {
-        const content = await ContentModel.findOne({ _id: contentId, userId });
-        
-        res.status(200).json({ message: "Content loaded successfully.",content });
-    } catch (error) {
-        res.status(500).json({ message: "An internal server error occurred." });
-    }
-})
+  // Default to an empty search string if no match is found
+  const linkType = filter === "All" ? '' : filterMap[filter]; // Handle "All" case
+
+  if (!userId) {
+      return res.status(401).json({ message: "User not authenticated." });
+  }
+
+  try {
+      // If linkType is an empty string, it means we are fetching all content
+      const query = linkType ? { linkType, userId } : { userId };
+
+      const content = await ContentModel.find(query);
+
+      res.status(200).json({ message: "Content loaded successfully.", content });
+  } catch (error) {
+      res.status(500).json({ message: "An internal server error occurred." });
+  }
+});
+
+
 
 function generateRandomString(length: number): string {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
