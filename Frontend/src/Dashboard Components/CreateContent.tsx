@@ -12,7 +12,7 @@ const linkTypes = [
   { value: "Youtube", label: "Youtube" },
   { value: "Website", label: "Website" },
   { value: "Document", label: "Document" },
-  { value: "Link", label: "Links" },
+  { value: "Links", label: "Links" },
   { value: "Other", label: "Other" },
 ];
 
