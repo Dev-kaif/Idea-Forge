@@ -1,1 +1,2 @@
-export const BACKEND_URL = "https://idea-forge-azure.vercel.app"
+
+export const BACKEND_URL: string = import.meta.env.VITE_BACKEND_URL as string;
