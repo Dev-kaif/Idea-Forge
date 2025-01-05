@@ -94,7 +94,7 @@ const Card = ({ Src,type,title,tags,Date,discription,icon,id,del,shared }: CardP
   const embedUrl = convertToEmbedUrl(Src);
 
   return (
-    <div className="flex flex-col justify-between bg-zinc-700 max-w-[20vw] max-h-[56vh] md:mx-2 my-5 rounded-xl overflow-hidden px-4 outline outline-1 outline-gray-100">
+    <div className="flex flex-col justify-between bg-zinc-700 max-w-80 max-h-[56vh] md:mx-2 my-5 rounded-xl overflow-hidden px-4 outline outline-1 outline-gray-100">
       <div>
         <div className="flex justify-between h-10 mb-2 items-center">
           <div className="flex items-center gap-2">
