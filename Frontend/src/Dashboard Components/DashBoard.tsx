@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import Background from './Dashboard Components/Background';
-import CreateContent from './Dashboard Components/CreateContent';
-import Sidebar from './Dashboard Components/sidebar';
+import Background from './Background';
+import CreateContent from './CreateContent';
+import Sidebar from './sidebar';
 
 
 const DashBoard = ({data,shared}) => {

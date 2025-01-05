@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router";
 import SignupPage from "../Authorization/Signup";
 import Landing from "../Landing Page/Landing";
 import LoginPage from "../Authorization/Login";
-import DashBoard from "../DashBoard";
+import DashBoard from "../Dashboard Components/DashBoard";
 import Shared from "../Dashboard Components/Shared";
 
 const route = () => {

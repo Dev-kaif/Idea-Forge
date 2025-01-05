@@ -1,4 +1,4 @@
-import DashBoard from '../DashBoard';
+import DashBoard from './DashBoard';
 import axios from "../utils/token";
 import { useEffect, useState } from "react";
 import { BACKEND_URL } from "../../config";
