@@ -5,7 +5,7 @@ import Cards from "./Cards";
 import axios from "../utils/token";
 import { useEffect, useState } from "react";
 import { BACKEND_URL } from "../../config";
-import Shared from './Shared';
+import { useParams } from "react-router";
 
 interface FuncProps {
   onClickopen: () => void;
@@ -25,7 +25,8 @@ const Background = ({ onClickopen, cardRender, data, shared }: FuncProps) => {
   const [cardData, setCardData] = useState<Card[]>([]);
   const [loading, setLoading] = useState(false);
   const [deleted, setDeleted] = useState(false);
-
+  
+  const {filter} = useParams();
   // Fetch cards only when shared is false
   useEffect(() => {
     if (shared) return;  // If shared is true, don't fetch data
@@ -33,8 +34,13 @@ const Background = ({ onClickopen, cardRender, data, shared }: FuncProps) => {
     async function getCards() {
       setLoading(true);
       try {
-        const res = await axios.get(`${BACKEND_URL}/api/v1/contents`);
-        setCardData(res.data.contents); // Set fetched data
+        if(filter){
+          const res = await axios.get(`${BACKEND_URL}/api/v1/contents/${filter}`);
+          setCardData(res.data.content); // Set fetched data
+        }else{
+          const res = await axios.get(`${BACKEND_URL}/api/v1/contents`);
+          setCardData(res.data.contents); // Set fetched data
+        }
       } catch (error) {
         console.error("Error fetching cards:", error);
         alert("Failed to fetch cards. Please try again.");
@@ -44,9 +50,8 @@ const Background = ({ onClickopen, cardRender, data, shared }: FuncProps) => {
     }
 
     getCards();
-  }, [cardRender, deleted, shared]); // Add shared to dependencies
+  }, [cardRender,deleted,shared,filter]); // Add shared to dependencies
 
-  console.log(cardData);
 
   async function deleteCard(id: string) {
     try {
@@ -80,8 +85,9 @@ const Background = ({ onClickopen, cardRender, data, shared }: FuncProps) => {
     }
   }
 
+  
   return (
-    <div id="Background" className="w-full min-h-screen py-12 md:px-10 md:py-12">
+    <div id="Background" className="w-full min-h-screen py-12 md:px-10 md:py-12 ">
       <div id="nav" className="w-full flex justify-between px-1">
         <div id="text" className="font-bold text-2xl md:text-4xl">
           All Notes
@@ -106,11 +112,12 @@ const Background = ({ onClickopen, cardRender, data, shared }: FuncProps) => {
       </div>
       <div id="cards">
         {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <Cards deleteCard={deleteCard} shared={shared} data={shared ? data : cardData} />
-        )}
+        <div className=" absolute left-1/2 top-1/2">
+           <div>Loading...</div>
+        </div>
+        ) :(<Cards deleteCard={deleteCard} shared={shared} data={shared ? data : cardData} />)}
       </div>
+
     </div>
   );
 };

@@ -141,7 +141,7 @@ const Card = ({ Src,type,title,tags,Date,discription,icon,id,del,shared }: CardP
 
       <div>
         <div className="text-sm w-full h-10 items-center flex gap-1 my-2">
-          {tags && tags.map((tag)=><div className="bg-purple-300 text-purple-500 w-fit px-3 py-1 rounded-xl">#{tag}</div>)}
+          {tags && tags.map((tag,index)=><div key={index} className="bg-purple-300 text-purple-500 w-fit px-3 py-1 rounded-xl">#{tag}</div>)}
         </div>
         <div className="h-8 items-center my-1 text-sm text-gray-300">Added on {Date}</div>
       </div>
