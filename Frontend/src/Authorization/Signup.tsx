@@ -39,10 +39,11 @@ const SignupPage: React.FC = () => {
 
       alert(res.data.message); // Show success message
       navigate("/login")
-    } catch (err: any) {
-      const errorMessage = err.response?.data?.message || "Signup failed. Please try again.";
+    }catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      const errorMessage = error.response?.data?.message || "Signup failed. Please try again.";
       alert(errorMessage); // Show error message
-    } finally {
+    }finally {
       setloading(false); // Set loading to false after request completion
     }
   };

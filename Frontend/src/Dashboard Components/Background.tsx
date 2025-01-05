@@ -29,61 +29,63 @@ const Background = ({ onClickopen, cardRender, data, shared }: FuncProps) => {
   const {filter} = useParams();
   // Fetch cards only when shared is false
   useEffect(() => {
-    if (shared) return;  // If shared is true, don't fetch data
-
+    if (shared) return;
+    
     async function getCards() {
       setLoading(true);
       try {
-        if(filter){
-          const res = await axios.get(`${BACKEND_URL}/api/v1/contents/${filter}`);
+        if (filter) {
+          const res = await axios.get<{ content: Card[] }>(`${BACKEND_URL}/api/v1/contents/${filter}`);
           setCardData(res.data.content); // Set fetched data
-        }else{
-          const res = await axios.get(`${BACKEND_URL}/api/v1/contents`);
+        } else {
+          const res = await axios.get<{ contents: Card[] }>(`${BACKEND_URL}/api/v1/contents`);
           setCardData(res.data.contents); // Set fetched data
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.error("Error fetching cards:", error);
         alert("Failed to fetch cards. Please try again.");
       } finally {
         setLoading(false);
       }
     }
-
+  
     getCards();
-  }, [cardRender,deleted,shared,filter]); // Add shared to dependencies
+  }, [cardRender, deleted, shared, filter]); // Added shared to dependencies
+  
 
 
   async function deleteCard(id: string) {
     try {
-      const res = await axios.delete(`${BACKEND_URL}/api/v1/content`, {
+      const res = await axios.delete<{ message: string }>(`${BACKEND_URL}/api/v1/content`, {
         data: { contentId: id },
       });
       setDeleted((prev) => !prev);
       alert(res.data.message);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error deleting card:", error);
       alert("Failed to delete the card. Please try again.");
     }
   }
+  
 
   async function copy() {
     try {
-      const res = await axios.post(`${BACKEND_URL}/api/v1/brain/share`, {
+      const res = await axios.post<{ hash?: string }>(`${BACKEND_URL}/api/v1/brain/share`, {
         share: true,
       });
-      console.log(res.data);
-
+  
       if (res.data && res.data.hash) {
         await navigator.clipboard.writeText(`http://localhost:5173/share/${res.data.hash}`);
         alert("Copied to clipboard!");
       } else {
         alert("No hash data found.");
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error copying to clipboard:", error);
       alert("Failed to copy. Please try again.");
     }
   }
+  
 
   
   return (

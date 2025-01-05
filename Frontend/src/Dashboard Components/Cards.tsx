@@ -14,9 +14,10 @@ interface CardItem {
 
 interface Dataarray {
   data: CardItem[];
-  deleteCard:any;
-  shared?:boolean
+  deleteCard: (id: string) => void;  // Replacing 'any' with appropriate function signature
+  shared?: boolean;
 }
+
 
 const Cards = ({data,deleteCard,shared}:Dataarray) => {
 

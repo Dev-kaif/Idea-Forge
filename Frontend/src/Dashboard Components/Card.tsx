@@ -2,19 +2,19 @@ import { MdDeleteOutline } from "react-icons/md";
 import {  IoShareSocialOutline } from "react-icons/io5";
 import { ReactNode, useCallback, useEffect } from "react";
 
-// Define the interface for props: YoutubeSrc and twitterSrc are optional strings.
 interface CardProps {
-  id:string
-  title:string;
-  Src?:string;
+  id: string;
+  title: string;
+  Src?: string;
   type: string;
-  discription?:string;
-  Date:string;
-  tags?:string[];
-  icon?:ReactNode;
-  del?:any;
-  shared?:boolean
+  discription?: string;
+  Date: string;
+  tags?: string[];
+  icon?: ReactNode;
+  del?: (id: string) => void;  
+  shared?: boolean;
 }
+
 
 const Card = ({ Src,type,title,tags,Date,discription,icon,id,del,shared }: CardProps) => {
 
