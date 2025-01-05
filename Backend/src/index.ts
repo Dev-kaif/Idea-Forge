@@ -312,7 +312,6 @@ app.post('/api/v1/brain/share',async (req: IGetUserAuthInfoRequest, res: Respons
 async function main():Promise<void> {
     try {
         await mongoose.connect(mongo)
-        console.log("connected to the database");
         
         app.listen(3000);
 
