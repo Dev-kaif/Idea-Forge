@@ -5,13 +5,13 @@ import { ReactNode, useCallback, useEffect } from "react";
 interface CardProps {
   id: string;
   title: string;
-  Src?: string;
+  Src: string 
   type: string;
   discription?: string;
   Date: string;
   tags?: string[];
   icon?: ReactNode;
-  del?: (id: string) => void;  
+  del: (id: string) => void ;
   shared?: boolean;
 }
 

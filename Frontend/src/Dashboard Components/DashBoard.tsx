@@ -3,8 +3,22 @@ import Background from './Background';
 import CreateContent from './CreateContent';
 import Sidebar from './sidebar';
 
+interface FuncProps {
+  data?: Card[]; 
+  shared?: boolean;
+}
 
-const DashBoard = ({data,shared}) => {
+interface Card {
+  _id: string;
+  title: string;
+  content: string;
+  linkType:string;
+  link:string;
+  description:string;
+  tags:string[];
+}
+
+const DashBoard = ({data,shared}:FuncProps) => {
   const [modelOpen, setModelOpen] = useState(false);
   const [cardRender, setcardRender] = useState(false);
 
@@ -15,9 +29,13 @@ const DashBoard = ({data,shared}) => {
         setcardRender(prev=>!prev)
       }}/>
       <Sidebar/>
-      <Background cardRender={cardRender} shared={shared} data={data} onClickopen={()=>{
+      {shared && data? <Background cardRender={cardRender} shared={shared} data={data} onClickopen={()=>{
         setModelOpen(true)
-      }} />
+      }} /> :(
+        <Background cardRender={cardRender} onClickopen={()=>{
+          setModelOpen(true)
+        }} />
+      )}
     </div>
   )
 }

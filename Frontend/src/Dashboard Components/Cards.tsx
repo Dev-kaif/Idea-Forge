@@ -5,6 +5,7 @@ import { FaXTwitter } from "react-icons/fa6";
 import { MdComputer } from "react-icons/md";
 
 interface CardItem {
+  _id:string;
   title: string;
   linkType: string;
   link: string;

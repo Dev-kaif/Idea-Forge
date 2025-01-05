@@ -10,15 +10,18 @@ import { useParams } from "react-router";
 interface FuncProps {
   onClickopen: () => void;
   cardRender: boolean;
-  data: Card[];  // Assuming `data` is passed when `shared` is true
-  shared: boolean;
+  data?: Card[]; 
+  shared?: boolean;
 }
 
 interface Card {
-  id: string;
+  _id: string;
   title: string;
   content: string;
-  // Add other properties as needed
+  linkType:string;
+  link:string;
+  description:string;
+  tags:string[];
 }
 
 const Background = ({ onClickopen, cardRender, data, shared }: FuncProps) => {
@@ -117,7 +120,9 @@ const Background = ({ onClickopen, cardRender, data, shared }: FuncProps) => {
         <div className=" absolute left-1/2 top-1/2">
            <div>Loading...</div>
         </div>
-        ) :(<Cards deleteCard={deleteCard} shared={shared} data={shared ? data : cardData} />)}
+        ) :(
+          shared && data? (<Cards deleteCard={deleteCard} shared={shared} data={data} />):(<Cards deleteCard={deleteCard} data={cardData} />)
+        )}
       </div>
 
     </div>

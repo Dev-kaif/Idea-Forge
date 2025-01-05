@@ -27,8 +27,9 @@ const LoginPage: React.FC = () => {
       localStorage.setItem("token", jwt);
   
       navigate("/dashboard");
-    } catch (err: any) {
-      const errorMessage = err.response?.data?.message || "Signin failed. Please try again.";
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      const errorMessage = error.response?.data?.message || "Signup failed. Please try again.";
       alert(errorMessage); // Show error message
     } finally {
       setloading(false); // Set loading to false after request completion
