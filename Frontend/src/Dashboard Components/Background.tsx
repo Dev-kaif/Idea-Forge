@@ -5,6 +5,7 @@ import Cards from "./Cards";
 import axios from "../utils/token";
 import { useEffect, useState } from "react";
 import { BACKEND_URL } from "../../config";
+import { FRONTEND_URL } from "../../config";
 import { useParams } from "react-router";
 
 interface FuncProps {
@@ -76,9 +77,9 @@ const Background = ({ onClickopen, cardRender, data, shared }: FuncProps) => {
       const res = await axios.post<{ hash?: string }>(`${BACKEND_URL}/api/v1/brain/share`, {
         share: true,
       });
-  
+      
       if (res.data && res.data.hash) {
-        await navigator.clipboard.writeText(`http://localhost:5173/share/${res.data.hash}`);
+        await navigator.clipboard.writeText(`${FRONTEND_URL}/share/${res.data.hash}`);
         alert("Copied to clipboard!");
       } else {
         alert("No hash data found.");
