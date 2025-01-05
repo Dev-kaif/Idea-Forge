@@ -18,6 +18,7 @@ app.use(
     credentials: true, // Allow cookies if needed
   })
 );
+app.options("*", cors()); // Handle all OPTIONS requests
 
 app.use(express.json());
 
