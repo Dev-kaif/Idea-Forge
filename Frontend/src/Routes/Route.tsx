@@ -5,6 +5,7 @@ import Landing from "../Landing Page/Landing";
 import LoginPage from "../Authorization/Login";
 import DashBoard from "../Dashboard Components/DashBoard";
 import Shared from "../Dashboard Components/Shared";
+import NotFound404 from "../Dashboard Components/Notfound404";
 
 const route = () => {
   return (
@@ -14,7 +15,8 @@ const route = () => {
         <Route path="/login" element={<LoginPage/>}/>
         <Route path="/dashboard" element={<DashBoard/>}/>
         <Route path="/dashboard/:filter" element={<DashBoard/>}/>
-        <Route path="/:hash" element={<Shared />}/>
+        <Route path="/share/:hash" element={<Shared />}/>
+        <Route path="/:random" element={<NotFound404/>}/>
     </Routes>
   )
 }
