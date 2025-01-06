@@ -5,6 +5,7 @@ import { BACKEND_URL } from "../../config";
 interface AddContentProps {
   open: boolean;
   onClose: () => void;
+  shared?:boolean;
 }
 
 const linkTypes = [
@@ -16,7 +17,7 @@ const linkTypes = [
   { value: "Other", label: "Other" },
 ];
 
-function CreateContent({ open, onClose }: AddContentProps) {
+function CreateContent({ open, onClose,shared }: AddContentProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [linkType, setLinkType] = useState("");
@@ -28,6 +29,7 @@ function CreateContent({ open, onClose }: AddContentProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    if (shared) return;
     async function fetchTags() {
       try {
         const res = await axios.get(`${BACKEND_URL}/api/v1/tags`);
@@ -37,7 +39,7 @@ function CreateContent({ open, onClose }: AddContentProps) {
       }
     }
     fetchTags();
-  }, []);
+  }, [shared]);
 
   const handleTagSelection = (tag: string) => {
     setSelectedTags((prev) =>
