@@ -3,15 +3,21 @@ import { LuBrain } from "react-icons/lu";
 import { AiOutlineYoutube } from "react-icons/ai";
 import { FaXTwitter } from "react-icons/fa6";
 import { IoDocumentTextOutline ,IoLink} from "react-icons/io5";
-import { MdOutlineClearAll } from "react-icons/md"
+import { MdOutlineClearAll,MdOutlineLogout  } from "react-icons/md"
 import { FiSidebar } from "react-icons/fi";
 import Button from "./Button";
 import { useNavigate } from "react-router";
+import Logout from './Logout';
 
-function Sidebar(){
+interface prop{
+  shared?:boolean;
+}
+
+function Sidebar({shared}){
   const [open, setOpen] = useState(true);
   const [width, setWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
+  const [logoutpop,setLogoutpop] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
@@ -49,17 +55,29 @@ function Sidebar(){
           />
         </div>
       </div>
-      <div className="mt-10 w-full h-full">
-        {data.map((item, index) => (
-          <Button
-            onClick={()=>navigate(`/dashboard/${item.name}`)}
-            key={index}
-            sidebar={true}
-            variant="h-14 px-10"
-            text={open ? item.name : ""}
-            icon={item.logo}
-          />
-        ))}
+      <div className="mt-10 w-full h-full ">
+        <div className="mb-20">
+          {data.map((item, index) => (
+            <Button
+              onClick={()=>navigate(`/dashboard/${item.name}`)}
+              key={index}
+              sidebar={true}
+              variant="h-14 px-10"
+              text={open ? item.name : ""}
+              icon={item.logo}
+              />
+            ))}
+          </div>
+        {!shared && <Button onClick={()=>{
+         setLogoutpop(true)
+        }}  text={open ? "Logout" : ""} icon={<MdOutlineLogout />}
+         variant="px-10 gap-5 my-3 text-xl hover:bg-zinc-500 h-10"/>}
+        <Logout isOpen={logoutpop} onClose={()=>{
+          setLogoutpop(false)
+        }} onConfirm={()=>{
+          navigate('/')
+          localStorage.removeItem('token')
+        }}/>
       </div>
     </div>
   );
