@@ -79,7 +79,7 @@ const Background = ({ onClickopen, cardRender, data, shared }: FuncProps) => {
       });
       
       if (res.data && res.data.hash) {
-        await navigator.clipboard.writeText(`${FRONTEND_URL}/share/${res.data.hash}`);
+        await navigator.clipboard.writeText(`${FRONTEND_URL}/${res.data.hash}`);
         alert("Copied to clipboard!");
       } else {
         alert("No hash data found.");

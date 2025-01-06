@@ -14,7 +14,7 @@ const route = () => {
         <Route path="/login" element={<LoginPage/>}/>
         <Route path="/dashboard" element={<DashBoard/>}/>
         <Route path="/dashboard/:filter" element={<DashBoard/>}/>
-        <Route path="/share/:hash" element={<Shared />}/>
+        <Route path="/:hash" element={<Shared />}/>
     </Routes>
   )
 }
