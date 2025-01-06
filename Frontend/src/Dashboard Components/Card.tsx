@@ -1,5 +1,5 @@
 import { MdDeleteOutline } from "react-icons/md";
-import {  IoShareSocialOutline } from "react-icons/io5";
+import { RiLinksLine } from "react-icons/ri";
 import { ReactNode, useCallback, useEffect } from "react";
 
 interface CardProps {
@@ -103,7 +103,7 @@ const Card = ({ Src,type,title,tags,Date,discription,icon,id,del,shared }: CardP
           </div>
           <div className="text-xl flex gap-3">
             {/* Share Icon - Calls openExternalLink to open the respective link */}
-            <IoShareSocialOutline
+            <RiLinksLine
               onClick={() => openExternalLink(Src)}
               className="hover:text-gray-50 text-gray-300 cursor-pointer"
             />

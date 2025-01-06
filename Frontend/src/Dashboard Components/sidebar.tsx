@@ -55,7 +55,7 @@ function Sidebar(){
             onClick={()=>navigate(`/dashboard/${item.name}`)}
             key={index}
             sidebar={true}
-            variant="h-14"
+            variant="h-14 px-10"
             text={open ? item.name : ""}
             icon={item.logo}
           />

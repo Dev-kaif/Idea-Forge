@@ -15,7 +15,7 @@ interface buttonProps{
 
 const Button = ({text ,icon,variant,sidebar,disabled,onClick}:buttonProps) => {
   return ( 
-        <button disabled={disabled} onClick={onClick} className={`${variant} ${sidebar && "gap-5 my-3 text-xl hover:bg-zinc-500"} w-full md:flex flex items-center cursor-pointer rounded-lg text-sm gap-2 px-5 `}>
+        <button disabled={disabled} onClick={onClick} className={`${variant} ${sidebar && "gap-5 my-3 text-xl hover:bg-zinc-500"} w-full md:flex flex items-center cursor-pointer rounded-lg text-sm gap-2 px-4 `}>
             <div>{icon}</div>
             <div>{text}</div>
         </button>

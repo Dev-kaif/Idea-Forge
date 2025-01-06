@@ -102,7 +102,7 @@ const Background = ({ onClickopen, cardRender, data, shared }: FuncProps) => {
           <div className="flex gap-3 w-[19vw]">
             <Button
               text="Share Idea"
-              variant="bg-purple-300 hover:bg-purple-400 text-purple-500 hidden"
+              variant="bg-purple-300 hover:bg-purple-400 text-purple-500 hidden justify-center items-center "
               sidebar={false}
               icon={<IoShareSocialOutline />}
               onClick={copy}
@@ -110,7 +110,7 @@ const Background = ({ onClickopen, cardRender, data, shared }: FuncProps) => {
             <Button
               onClick={onClickopen}
               text="Add Content"
-              variant="bg-purple-700 hover:bg-purple-600"
+              variant="bg-purple-700 hover:bg-purple-600 justify-center items-center"
               icon={<FaPlus />}
             />
           </div>
