@@ -11,14 +11,7 @@ import cors from 'cors'
 const app = express();
 const saltRounds = 5;
 
-app.use(
-  cors({
-    origin: "https://idea-forge.onrender.com", // Frontend URL
-    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
-    credentials: true, // Allow cookies if needed
-  })
-);
-app.options("*", cors()); // Handle all OPTIONS requests
+app.options("*", cors()); 
 
 app.use(express.json());
 
