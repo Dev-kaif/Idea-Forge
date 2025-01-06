@@ -71,7 +71,7 @@ const LoginPage: React.FC = () => {
             type="submit"
             disabled={loading} 
             variant={`${
-              loading ? "bg-[#181362] cursor-not-allowed opacity-60" : "bg-purple-700 hover:bg-purple-600"
+              loading ? "bg-[#181362] cursor-not-allowed opacity-60 cursor-default" : "bg-purple-700 hover:bg-purple-600"
             } py-2 justify-center transition`}
           />
         </form>
