@@ -13,7 +13,7 @@ interface prop{
   shared?:boolean;
 }
 
-function Sidebar({shared}){
+function Sidebar({shared}:prop){
   const [open, setOpen] = useState(true);
   const [width, setWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
