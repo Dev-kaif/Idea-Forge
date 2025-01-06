@@ -27,6 +27,7 @@ const Cards = ({data,deleteCard,shared}:Dataarray) => {
       { name: "Youtube", logo: <AiOutlineYoutube /> },
       { name: "Documents", logo: <IoDocumentTextOutline /> },
       { name: "Links", logo: <IoLink /> },
+      { name: "Website", logo: <IoLink /> },
       { name: "Other", logo: <MdComputer /> },
     ];
 
@@ -36,7 +37,7 @@ const Cards = ({data,deleteCard,shared}:Dataarray) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {data.map((item)=>{
         const icon =  icons.filter((i)=>i.name==item.linkType)
-        return <Card shared={shared} del={deleteCard} title={item.title} key={item._id} id={item._id}  discription={item.description}  type={item.linkType} Src={item.link } icon={icon[0].logo} tags={item.tags}   Date={new Date().toLocaleDateString()}/>
+        return <Card shared={shared} del={deleteCard} title={item.title} key={item._id} id={item._id}  discription={item.description}  type={item.linkType} icon={icon[0].logo}  Src={item.link } tags={item.tags}   Date={new Date().toLocaleDateString()}/>
         })}
       </div>
     </div>
