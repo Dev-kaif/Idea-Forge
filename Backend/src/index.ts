@@ -13,7 +13,7 @@ const saltRounds = 5;
 
 app.use(
   cors({
-    origin: "https://idea-forge--nine.vercel.app/", // Frontend URL
+    origin: "https://idea-forge--nine.vercel.app", // Frontend URL
     methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
     credentials: true, // Allow cookies if needed
   })
