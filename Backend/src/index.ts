@@ -190,7 +190,7 @@ app.put('/api/v1/tags',async (req: IGetUserAuthInfoRequest, res: Response): fun 
 
 // Fetch User's Contents
 app.get('/api/v1/contents', async (req: IGetUserAuthInfoRequest, res: Response): fun => {
-  const filter = req.query.filter
+
   if (!req.userId) {
     return res.status(401).json({ message: "User not authenticated." });
   }
@@ -236,30 +236,37 @@ app.delete('/api/v1/content', async (req: IGetUserAuthInfoRequest, res: Response
   }
 });
 
-//get single content
-app.get('/api/v1/contents/:content', async (req: IGetUserAuthInfoRequest, res: Response): fun => {
+app.get('/api/v1/contents/:content', async (req: IGetUserAuthInfoRequest, res: Response) => {
   const filter = req.params.content;
   const userId = req.userId;
 
   // Use a mapping object for search values
-  const filterMap: Record<string, string> = {
+  const filterMap: Record<string, string | string[]> = {
       'Videos': 'Youtube',
       'Tweets': 'Twitter',
       'Documents': 'Document',
       'Website': 'Links',
-      'Links': 'Links',
+      'Links': ['Links', 'Website'], 
   };
 
-  // Default to an empty search string if no match is found
-  const linkType = filter === "All" ? '' : filterMap[filter]; // Handle "All" case
+  const linkType = filter === "All" ? '' : filterMap[filter];
 
   if (!userId) {
       return res.status(401).json({ message: "User not authenticated." });
   }
 
   try {
-      // If linkType is an empty string, it means we are fetching all content
-      const query = linkType ? { linkType, userId } : { userId };
+      let query: Record<string, unknown>;
+
+      if (linkType) {
+          // If linkType is an array (e.g., "Links" case), use $in
+          query = Array.isArray(linkType)
+              ? { linkType: { $in: linkType }, userId }
+              : { linkType, userId };
+      } else {
+          // Handle "All" case
+          query = { userId };
+      }
 
       const content = await ContentModel.find(query);
 
@@ -268,6 +275,7 @@ app.get('/api/v1/contents/:content', async (req: IGetUserAuthInfoRequest, res: R
       res.status(500).json({ message: "An internal server error occurred." });
   }
 });
+
 
 
 
