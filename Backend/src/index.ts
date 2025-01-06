@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
 import { UserModel, ContentModel, LinkModel, TagsModel } from './Database/schema';
-import { JWT_SECRET, mongo } from './config';
+import { FRONTEND_URL, JWT_SECRET, mongo } from './config';
 import authMiddleware from './auth';
 import cors from 'cors'
 const app = express();
@@ -13,7 +13,7 @@ const saltRounds = 5;
 
 app.use(
   cors({
-    origin: "https://idea-forge--nine.vercel.app", // Frontend URL
+    origin: FRONTEND_URL, // Frontend URL
     methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
     credentials: true, // Allow cookies if needed
   })
