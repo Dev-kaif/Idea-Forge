@@ -33,7 +33,7 @@ function CreateContent({ open, onClose }: AddContentProps) {
         const res = await axios.get(`${BACKEND_URL}/api/v1/tags`);
         setTags(res.data.tags[0].tags);
       } catch (error) {
-        console.error("Error fetching tags:", error);
+        alert("Error fetching tags " + error)
       }
     }
     fetchTags();
@@ -57,8 +57,7 @@ function CreateContent({ open, onClose }: AddContentProps) {
         setShowNewTagInput(false);
         alert(res.data.message);
       } catch (error) {
-        console.error("Error adding new tag:", error);
-        alert("Failed to add new tag. Please try again.");
+        alert("Failed to add new tag. Please try again. " + error);
       }
     } else {
       alert("Tag already exists or input is empty.");
@@ -89,8 +88,7 @@ function CreateContent({ open, onClose }: AddContentProps) {
       setSelectedTags([]);
   
     } catch (error) {
-      console.error("Error adding content:", error);
-      alert("Failed to add content. Please try again.");
+      alert("Error adding content: " + error);
     } finally {
       setIsLoading(false);
     }

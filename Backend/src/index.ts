@@ -128,8 +128,7 @@ app.get('/api/v1/brain/:shareLink',async (req: Request, res: Response): fun => {
       res.json({user, content });
 
     } catch (error) {
-      console.error('Error fetching shared content:', error);
-      res.status(500).json({ message: 'An error occurred while processing the request' });
+      res.status(500).json({ message: 'An error occurred while processing the request' ,error });
     }
   }
 );
@@ -316,8 +315,7 @@ app.post('/api/v1/brain/share',async (req: IGetUserAuthInfoRequest, res: Respons
 
         }
     } catch (error) {
-      console.error('Error updating shareable link:', error);
-      res.status(500).json({ message: 'An error occurred' });
+      res.status(500).json({ message: 'An error occurred',error });
     }
   }
 );
@@ -331,7 +329,6 @@ async function main():Promise<void> {
         app.listen(3000);
 
     } catch (error) {
-        console.error("Failed to connect to the database:");
         process.exit(1);
     }
 }

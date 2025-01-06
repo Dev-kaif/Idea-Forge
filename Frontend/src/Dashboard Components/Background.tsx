@@ -46,8 +46,7 @@ const Background = ({ onClickopen, cardRender, data, shared }: FuncProps) => {
           setCardData(res.data.contents); // Set fetched data
         }
       } catch (error: unknown) {
-        console.error("Error fetching cards:", error);
-        alert("Failed to fetch cards. Please try again.");
+        alert("Failed to fetch cards. Please try again. " + error);
       } finally {
         setLoading(false);
       }
@@ -66,8 +65,7 @@ const Background = ({ onClickopen, cardRender, data, shared }: FuncProps) => {
       setDeleted((prev) => !prev);
       alert(res.data.message);
     } catch (error: unknown) {
-      console.error("Error deleting card:", error);
-      alert("Failed to delete the card. Please try again.");
+      alert("Failed to delete the card. Please try again. " +error);
     }
   }
   
@@ -85,8 +83,7 @@ const Background = ({ onClickopen, cardRender, data, shared }: FuncProps) => {
         alert("No hash data found.");
       }
     } catch (error: unknown) {
-      console.error("Error copying to clipboard:", error);
-      alert("Failed to copy. Please try again.");
+      alert("Failed to copy. Please try again. " + error);
     }
   }
   
