@@ -236,7 +236,7 @@ app.delete('/api/v1/content', async (req: IGetUserAuthInfoRequest, res: Response
   }
 });
 
-app.get('/api/v1/contents/:content', async (req: IGetUserAuthInfoRequest, res: Response) => {
+app.get('/api/v1/contents/:content', async (req: IGetUserAuthInfoRequest, res: Response): fun => {
   const filter = req.params.content;
   const userId = req.userId;
 
