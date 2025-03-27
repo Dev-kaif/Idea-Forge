@@ -17,12 +17,19 @@ const linkTypes = [
   { value: "Other", label: "Other" },
 ];
 
+interface Tag {
+  _id: string;  
+  name: string;  
+  createdAt?: string; 
+  updatedAt?: string; 
+}
+
 function CreateContent({ open, onClose,shared }: AddContentProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [linkType, setLinkType] = useState("");
   const [link, setLink] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
   const [showNewTagInput, setShowNewTagInput] = useState(false);
@@ -33,7 +40,7 @@ function CreateContent({ open, onClose,shared }: AddContentProps) {
     async function fetchTags() {
       try {
         const res = await axios.get(`${BACKEND_URL}/api/v1/tags`);
-        setTags(res.data.tags[0].tags);
+        setTags(res.data.tags);
       } catch (error) {
         alert("Error fetching tags " + error)
       }
@@ -41,28 +48,30 @@ function CreateContent({ open, onClose,shared }: AddContentProps) {
     fetchTags();
   }, [shared]);
 
-  const handleTagSelection = (tag: string) => {
+  const handleTagSelection = (tagName: string) => {
     setSelectedTags((prev) =>
-      prev.includes(tag)
-        ? prev.filter((t) => t !== tag) // Remove tag if already selected
-        : [...prev, tag] // Add tag if not selected
+      prev.includes(tagName) ? prev.filter((name) => name !== tagName) : [...prev, tagName]
     );
   };
-
+  
+  
   const handleAddNewTag = async () => {
-    if (newTag && !tags.includes(newTag)) {
-      const newTags = [...tags, newTag];
-      try {
-        const res = await axios.put(`${BACKEND_URL}/api/v1/tags`, { tags: newTags });
-        setTags(newTags);
-        setNewTag("");
-        setShowNewTagInput(false);
-        alert(res.data.message);
-      } catch (error) {
-        alert("Failed to add new tag. Please try again. " + error);
-      }
-    } else {
-      alert("Tag already exists or input is empty.");
+  
+    if (tags.some((tag) => tag.name.toLowerCase() === newTag.toLowerCase())) {
+      alert("Tag already exists.");
+      return;
+    }
+  
+    try {
+      const res = await axios.put(`${BACKEND_URL}/api/v1/tags`, { tags: [newTag] });
+      const createdTag = res.data.tags[0]; // Extract the created tag
+      setTags([...tags, createdTag]); 
+      setNewTag("");
+      setShowNewTagInput(false);
+      setSelectedTags([])
+      alert(res.data.message);
+    } catch (error) {
+      alert("Failed to add new tag. Please try again. " + error);
     }
   };
 
@@ -87,8 +96,6 @@ function CreateContent({ open, onClose,shared }: AddContentProps) {
       setDescription("");
       setLinkType("");
       setLink("");
-      setSelectedTags([]);
-  
     } catch (error) {
       alert("Error adding content: " + error);
     } finally {
@@ -183,18 +190,18 @@ function CreateContent({ open, onClose,shared }: AddContentProps) {
                     Tags <span className="text-zinc-400">(optional)</span>
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {tags.map((tag, index) => (
+                    {tags.map((tag) => (
                       <button
-                        key={index}
+                        key={tag._id}
                         type="button"
-                        onClick={() => handleTagSelection(tag)}
+                        onClick={() => handleTagSelection(tag.name)}
                         className={`px-3 py-1 rounded-full border ${
-                          selectedTags.includes(tag)
+                          selectedTags.includes(tag.name)
                             ? "bg-blue-600 text-white border-blue-600"
                             : "bg-zinc-100 text-zinc-700 border-zinc-300 dark:bg-zinc-700 dark:text-zinc-300 dark:border-zinc-600"
-                        } hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors`}
+                        }  hover:text-white hover:border-blue-500 transition-colors`}
                       >
-                        {tag}
+                        {tag.name}
                       </button>
                     ))}
                   </div>

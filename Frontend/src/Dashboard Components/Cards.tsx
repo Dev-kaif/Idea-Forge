@@ -15,7 +15,7 @@ interface CardItem {
 
 interface Dataarray {
   data: CardItem[];
-  deleteCard: (id: string) => void;  // Replacing 'any' with appropriate function signature
+  deleteCard: (id: string) => void; 
   shared?: boolean;
 }
 
@@ -25,12 +25,11 @@ const Cards = ({data,deleteCard,shared}:Dataarray) => {
     const icons = [
       { name: "Twitter", logo: <FaXTwitter /> },
       { name: "Youtube", logo: <AiOutlineYoutube /> },
-      { name: "Documents", logo: <IoDocumentTextOutline /> },
+      { name: "Document", logo: <IoDocumentTextOutline /> },
       { name: "Links", logo: <IoLink /> },
       { name: "Website", logo: <IoLink /> },
       { name: "Other", logo: <MdComputer /> },
     ];
-
     
   return (
     <div className="mx-auto px-4 py-8">

@@ -142,7 +142,7 @@ app.post('/api/v1/content', async (req: IGetUserAuthInfoRequest, res: Response):
   const { title, description, link, linkType, tags }: ContentInfo = req.body;
 
   // Validate required fields
-  if (!title || !link || !tags || !linkType) {
+  if (!title || !tags || !linkType) {
     return res.status(400).json({ message: "Missing required fields: title, link, linkType, or tags." });
   }
 
@@ -172,20 +172,35 @@ app.post('/api/v1/content', async (req: IGetUserAuthInfoRequest, res: Response):
   }
 });
 
+//update/add tags
 app.put('/api/v1/tags',async (req: IGetUserAuthInfoRequest, res: Response): fun => {
+
   const { tags }:Pick<ContentInfo,'tags'>  = req.body;
-  if (!tags) {
-    return res.status(400).json({ message: "Missing required fields: tags." });
+  
+  if (!tags || !Array.isArray(tags) || tags.length === 0) {
+    return res.status(400).json({ message: "Missing or invalid required field: tags." });
   }
+
+
   try {
-    
-    await TagsModel.updateOne({ tags });
-    return res.status(201).json({ message: "Tag created successfully." });
-    
+    // Insert new tags if they don't exist
+    const insertedTags = await Promise.all(
+      tags.map(async (tagName) => {
+        const existingTag = await TagsModel.findOne({ name: tagName });
+
+        if (!existingTag) {
+          return new TagsModel({ name: tagName }).save();
+        }
+        return existingTag;
+      })
+    );
+
+    return res.status(201).json({ message: "Tags created/updated successfully.", tags: insertedTags });
   } catch (error: any) {
     return res.status(500).json({ message: "An internal error occurred", error: error.message });
   }
 });
+
 
 // Fetch User's Contents
 app.get('/api/v1/contents', async (req: IGetUserAuthInfoRequest, res: Response): fun => {
